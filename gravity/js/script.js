@@ -1,19 +1,9 @@
 var game = new Phaser.Game(800,600, Phaser.AUTO,'',{
-    preload: preload,
-    create: create,
-    update: update,
-    render: render
+  preload: preload,
+  create: create,
+  update: update,
+  render: render
 });
-
-function preload(){
-   game.load.tilemap('map', 'map/map.json', null, Phaser.Tilemap.TILED_JSON);
-   game.load.image("player","graphics/player.png");
-   game.load.image("background", "graphics/background.jpg");
-   game.load.image('brick',"graphics/brick.png");
-   game.load.image('star',"graphics/star.png");
-   game.load.image('cil',"graphics/cil.png");
-   //game.load.video('tutorial',"video/tutorial.MP4");
-}
 
 var brick;
 var collision;
@@ -33,35 +23,51 @@ var timer;
 var seconds = 200;
 
 var ready;
-var video;
+
+function preload(){
+
+   game.load.tilemap('map', 'map/map.json', null, Phaser.Tilemap.TILED_JSON);
+   game.load.tilemap('map1', 'map/map1.json', null, Phaser.Tilemap.TILED_JSON);
+   game.load.image("player","graphics/player.png");
+   game.load.image('brick',"graphics/brick.png");
+   game.load.image('cil',"graphics/cil.png");
+}
 
 function create(){
 
-    //game.add.sprite(0,0,);
-    game.physics.startSystem(game.physics.ARCADE);
-    this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    platforms=game.add.group();
-    platforms.enableBody = true;
+   switch(level){
+     case 1:
+       game.physics.startSystem(game.physics.ARCADE);
+       this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+       platforms=game.add.group();
+       platforms.enableBody = true;
 
-    createPlayer();
+       createPlayer();
+       createMap();
 
-    map = game.add.tilemap('map');
+       game.stage.backgroundColor = '#000';
 
-    map.addTilesetImage('brick');
-    map.addTilesetImage('star');
-    map.addTilesetImage('cil');
+       timer = game.time.create(false);
 
-    layer = map.createLayer(0);
+       timer.start();
+     break;
+     case 2:
+       game.physics.startSystem(game.physics.ARCADE);
+       this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+       platforms=game.add.group();
+       platforms.enableBody = true;
 
-    layer.resizeWorld();
+       createPlayer();
+       createMap1();
 
-    map.setCollisionBetween(1, 1);
+       game.stage.backgroundColor = '#000';
 
-    game.stage.backgroundColor = '#000';
+       timer = game.time.create(false);
 
-    timer = game.time.create(false);
+       timer.start();
+     break;
+   }
 
-    timer.start();
 }
 
 function update(){
@@ -83,8 +89,8 @@ function update(){
    {
      move=180;
    }
+
    player.body.velocity.x = move;
-   console.log(move);
 
    changeGravity();
 
@@ -99,7 +105,7 @@ function update(){
         player.y = 286.25;
         level=2;
         move = 0;
-
+        create();
     }
 
 
@@ -108,7 +114,6 @@ function update(){
       player.kill();
       playerKill = true;
       move = 0;
-
    }
 
 }
@@ -151,4 +156,34 @@ function render(){
 
         }
      }
+  }
+
+  function createMap(){
+
+    map = game.add.tilemap('map');
+
+    map.addTilesetImage('brick');
+    map.addTilesetImage('cil');
+    map.setCollisionBetween(1, 1);
+
+    layer = map.createLayer(0);
+    layer.resizeWorld();
+
+
+  }
+
+  function createMap1(){
+    layer.destroy();
+    map.destroy();
+
+    map = game.add.tilemap('map1');
+
+    map.addTilesetImage('brick');
+    map.addTilesetImage('cil');
+    map.setCollisionBetween(1, 1);
+
+    layer = map.createLayer(0);
+    layer.resizeWorld();
+
+
   }
