@@ -25,49 +25,32 @@ var seconds = 200;
 var ready;
 
 function preload(){
-
    game.load.tilemap('map', 'map/map.json', null, Phaser.Tilemap.TILED_JSON);
    game.load.tilemap('map1', 'map/map1.json', null, Phaser.Tilemap.TILED_JSON);
-   game.load.image("player","graphics/player.png");
-   game.load.image('brick',"graphics/brick.png");
-   game.load.image('cil',"graphics/cil.png");
+   game.load.image('player','graphics/player.png');
+   game.load.image('template','graphics/template.png');
 }
 
 function create(){
 
+  game.stage.backgroundColor = '#000';
+  game.physics.startSystem(game.physics.ARCADE);
+  this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+  platforms=game.add.group();
+  platforms.enableBody = true;
+
    switch(level){
      case 1:
-       game.physics.startSystem(game.physics.ARCADE);
-       this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-       platforms=game.add.group();
-       platforms.enableBody = true;
-
-       createPlayer();
        createMap();
+      break;
 
-       game.stage.backgroundColor = '#000';
-
-       timer = game.time.create(false);
-
-       timer.start();
-     break;
      case 2:
-       game.physics.startSystem(game.physics.ARCADE);
-       this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-       platforms=game.add.group();
-       platforms.enableBody = true;
-
-       createPlayer();
        createMap1();
-
-       game.stage.backgroundColor = '#000';
-
-       timer = game.time.create(false);
-
-       timer.start();
-     break;
+    break;
    }
-
+   timer = game.time.create(false);
+   timer.start();
+    createPlayer();
 }
 
 function update(){
@@ -105,6 +88,8 @@ function update(){
         player.y = 286.25;
         level=2;
         move = 0;
+        layer.destroy();
+        map.destroy();
         create();
     }
 
@@ -117,6 +102,7 @@ function update(){
    }
 
 }
+
 function render(){
     game.debug.text('Level: ' + level, 10, height - 5);
     if(player.y <= 0 + player.body.height/2 || player.y>=600 - player.body.height/2){
@@ -162,8 +148,7 @@ function render(){
 
     map = game.add.tilemap('map');
 
-    map.addTilesetImage('brick');
-    map.addTilesetImage('cil');
+    map.addTilesetImage('template');
     map.setCollisionBetween(1, 1);
 
     layer = map.createLayer(0);
@@ -173,13 +158,10 @@ function render(){
   }
 
   function createMap1(){
-    layer.destroy();
-    map.destroy();
 
     map = game.add.tilemap('map1');
 
-    map.addTilesetImage('brick');
-    map.addTilesetImage('cil');
+    map.addTilesetImage('template');
     map.setCollisionBetween(1, 1);
 
     layer = map.createLayer(0);
